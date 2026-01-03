@@ -102,13 +102,7 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "**/*.php": [
-      "composer cs"
-    ],
     "resources/assets/**/*.{js,ts,css,pcss,vue}": [
-      "eslint --fix"
-    ],
-    "cypress/**/*.ts": [
       "eslint --fix"
     ]
   },
