@@ -10,6 +10,8 @@ export const useRouter = () => {
   const getRouteParam = <T = string> (name: string) => router.$currentRoute.value?.params?.[name] as T
   const getCurrentScreen = () => router.$currentRoute.value?.screen
   const isCurrentScreen = (...screens: ScreenName[]) => screens.includes(router.$currentRoute.value?.screen)
+  const getRouteName = () => router.$currentRoute.value?.name
+  const isCurrentRoute = (routeName: string) => routeName === router.$currentRoute.value?.name
 
   const onScreenActivated = (screen: ScreenName, cb: Closure) => {
     isCurrentScreen(screen) && cb()
@@ -19,6 +21,8 @@ export const useRouter = () => {
   return {
     getRouteParam,
     getCurrentScreen,
+    getRouteName,
+    isCurrentRoute,
     isCurrentScreen,
     onScreenActivated,
     go: Router.go,

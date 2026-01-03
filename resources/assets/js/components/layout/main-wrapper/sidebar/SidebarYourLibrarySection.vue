@@ -11,11 +11,17 @@
         </template>
         All Songs
       </SidebarItem>
-      <SidebarItem :href="url('albums.index')" :active="isCurrentScreen('Albums', 'Album')">
+      <SidebarItem :href="url('albums.index', { showAudioBooks: false })" :active="isCurrentRoute('albums.index')">
         <template #icon>
           <Icon :icon="faCompactDisc" fixed-width />
         </template>
         Albums
+      </SidebarItem>
+      <SidebarItem :href="url('audiobooks.index', { showAudioBooks: true })" :active="isCurrentRoute('audiobooks.index')">
+        <template #icon>
+          <Icon :icon="faBook" fixed-width />
+        </template>
+        Audiobooks
       </SidebarItem>
       <SidebarItem :href="url('artists.index')" :active="isCurrentScreen('Artists', 'Artist')">
         <template #icon>
@@ -54,7 +60,7 @@
 </template>
 
 <script lang="ts" setup>
-import { faCompactDisc, faMusic, faPodcast } from '@fortawesome/free-solid-svg-icons'
+import { faBook, faCompactDisc, faMusic, faPodcast } from '@fortawesome/free-solid-svg-icons'
 import { GuitarIcon, MicVocalIcon, RadioIcon } from 'lucide-vue-next'
 import { unescape } from 'lodash'
 import { ref, toRef } from 'vue'
@@ -69,7 +75,7 @@ import YouTubeSidebarItem from '@/components/layout/main-wrapper/sidebar/YouTube
 import MediaBrowserMenuItem from '@/components/layout/main-wrapper/sidebar/MediaBrowserMenuItem.vue'
 
 const youtubeVideoTitle = ref<string | null>(null)
-const { url, isCurrentScreen } = useRouter()
+const { url, isCurrentScreen, isCurrentRoute } = useRouter()
 
 const usesMediaBrowser = toRef(commonStore.state, 'uses_media_browser')
 const isDemo = window.IS_DEMO

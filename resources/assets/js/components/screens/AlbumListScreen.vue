@@ -2,7 +2,7 @@
   <ScreenBase>
     <template #header>
       <ScreenHeader layout="collapsed" :disabled="loading">
-        Albums
+        {{ showAudioBooks ? 'Audiobooks' : 'Albums' }}
         <template #controls>
           <div class="flex gap-2">
             <Btn
@@ -80,8 +80,11 @@ import ScreenBase from '@/components/screens/ScreenBase.vue'
 import GridListView from '@/components/ui/GridListView.vue'
 import AlbumListSorter from '@/components/album/AlbumListSorter.vue'
 import Btn from '@/components/ui/form/Btn.vue'
+import { useRouter } from '@/composables/useRouter'
 
 const { currentUserCan } = usePolicies()
+
+const { onRouteChanged, getRouteName } = useRouter()
 
 const gridContainer = ref<HTMLDivElement>()
 const grid = ref<InstanceType<typeof GridListView>>()
@@ -99,6 +102,8 @@ const itemLayout = computed<CardLayout>(
 const moreAlbumsAvailable = computed(() => page.value !== null)
 const showSkeletons = computed(() => loading.value && albums.value.length === 0)
 
+let showAudioBooks = false
+
 const fetchAlbums = async () => {
   if (loading.value || !moreAlbumsAvailable.value) {
     return
@@ -106,11 +111,18 @@ const fetchAlbums = async () => {
 
   loading.value = true
 
+  if (getRouteName() === 'albums.index') {
+    showAudioBooks = false
+  } else if (getRouteName() === 'audiobooks.index') {
+    showAudioBooks = true
+  }
+
   page.value = await albumStore.paginate({
     favorites_only: preferences.albums_favorites_only,
     page: page!.value || 1,
     sort: preferences.albums_sort_field,
     order: preferences.albums_sort_order,
+    audiobooks_only: showAudioBooks,
   })
 
   loading.value = false
@@ -141,6 +153,12 @@ const toggleFavoritesOnly = async () => {
   await nextTick()
   await fetchAlbums()
 }
+
+onRouteChanged(route => {
+  if (route.name === 'albums.index' || route.name === 'audiobooks.index') {
+    resetState().then(() => fetchAlbums())
+  }
+})
 
 onMounted(async () => {
   if (libraryEmpty.value) {

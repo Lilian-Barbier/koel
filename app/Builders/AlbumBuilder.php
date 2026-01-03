@@ -88,14 +88,46 @@ class AlbumBuilder extends FavoriteableBuilder
         User $user,
         bool $includeFavoriteStatus = true,
         bool $favoritesOnly = false,
+        bool $audiobooksOnly = false,
+        bool $hideAudiobooks = false,
         bool $includePlayCount = false,
     ): self {
         $this->user = $user;
 
         return $this->accessible()
             ->when($includeFavoriteStatus, static fn (self $query) => $query->withFavoriteStatus($favoritesOnly))
+            ->when($audiobooksOnly, static fn(self $query) => $query->withAudiobooksOnly())
+            ->when(!$audiobooksOnly, static fn (self $query) => $query->withoutAudiobook())
             ->when($includePlayCount, static fn (self $query) => $query->withPlayCount($includeFavoriteStatus));
     }
+
+    private function withAudiobooksOnly(): self
+    {
+        // Requete sql effectuée:
+        // SELECT DISTINCT albums.* from albums 
+        // LEFT JOIN songs ON albums.id = songs.album_id
+        // LEFT JOIN genre_song on genre_song.song_id = songs.id
+        // LEFT JOIN genres on genres.id = genre_song.genre_id
+        // where genres.name like 'Audiobook';
+
+        return $this
+            ->distinct()
+            ->join('songs', 'albums.id', '=', 'songs.album_id')
+            ->join('genre_song', 'genre_song.song_id', '=', 'songs.id')
+            ->join('genres', 'genre_song.genre_id', '=', 'genres.id')
+            ->where('genres.name', 'Audiobook');
+    
+    }
+    private function withoutAudiobook(): self
+    {
+        return $this
+            ->distinct()
+            ->join('songs', 'albums.id', '=', 'songs.album_id')
+            ->join('genre_song', 'genre_song.song_id', '=', 'songs.id')
+            ->join('genres', 'genre_song.genre_id', '=', 'genres.id')
+            ->whereNot('genres.name', 'Audiobook');
+    }
+
 
     private static function normalizeSortColumn(string $column): string
     {

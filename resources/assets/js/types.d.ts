@@ -463,6 +463,7 @@ declare type ScreenName =
   | '404'
   | 'Album'
   | 'Albums'
+  | 'Audiobooks'
   | 'Artist'
   | 'Artists'
   | 'Default'

@@ -20,6 +20,8 @@ interface AlbumListPaginateParams extends Record<string, any> {
   sort: AlbumListSortField
   order: SortOrder
   page: number
+  audiobooks_only?: boolean
+  hide_audiobooks?: boolean
 }
 
 export const albumStore = {

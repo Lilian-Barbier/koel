@@ -26,6 +26,8 @@ class AlbumController extends Controller
             sortColumn: $request->sort ?? 'name',
             sortDirection: $request->order ?? 'asc',
             favoritesOnly: $request->boolean('favorites_only'),
+            audiobooksOnly: $request->boolean('audiobooks_only'),
+            hideAudiobooks: $request->boolean('hide_audiobooks'),
         ));
     }
 

@@ -79,11 +79,13 @@ class AlbumRepository extends Repository implements ScoutableRepository
         string $sortColumn,
         string $sortDirection,
         bool $favoritesOnly = false,
+        bool $audiobooksOnly = false,
+        bool $hideAudiobooks = false,
         ?User $user = null,
     ): Paginator {
         return Album::query()
             ->onlyStandard()
-            ->withUserContext(user: $user ?? $this->auth->user(), favoritesOnly: $favoritesOnly)
+            ->withUserContext(user: $user ?? $this->auth->user(), favoritesOnly: $favoritesOnly, audiobooksOnly: $audiobooksOnly, hideAudiobooks: $hideAudiobooks)
             ->sort($sortColumn, $sortDirection)
             ->simplePaginate(21);
     }

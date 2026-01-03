@@ -35,6 +35,11 @@ export const routes = [
     screen: 'Albums',
   },
   {
+    name: 'audiobooks.index',
+    path: '/audiobooks',
+    screen: 'Albums',
+  },
+  {
     name: 'artists.index',
     path: '/artists',
     screen: 'Artists',
